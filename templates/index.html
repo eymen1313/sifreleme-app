@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Şifrele</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 24px;
+            width: 320px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 14px;
+            margin: 12px 0 4px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        input[readonly] {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Konuşmalarını Şifrele!</h1>
+
+        <select id="secenekler">
+            <option value="">--Tür--</option>
+            <option value="sifrele">Metni Şifrele</option>
+            <option value="coz">Şifreyi Çöz</option>
+        </select>
+
+        <h2>Metin</h2>
+        <input id="metin">
+
+        <h2>Anahtar</h2>
+        <input id="anahtar">
+
+
+        <button onclick=gonder()>Gönder</button>
+
+        <input id="sonuc" readonly placeholder="">
+    </div>
+
+    <script>
+        function gonder() {
+            const secim = document.getElementById("secenekler").value;
+            const anahtar = document.getElementById("anahtar").value;
+            const metin = document.getElementById("metin").value;
+
+            if (secim === "") {
+                alert("Türü seçiniz");
+                return;
+            }
+
+            fetch("http://127.0.0.1:5000/sifrele", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    option: secim,
+                    anahtar: anahtar,
+                    metin: metin
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("sonuc").value = data.sonuc;
+            })
+            .catch(err => {
+                alert("Bir hata oluştu");
+                console.error(err);
+            });
+        }
+        </script>
+
+</body>
+</html>
